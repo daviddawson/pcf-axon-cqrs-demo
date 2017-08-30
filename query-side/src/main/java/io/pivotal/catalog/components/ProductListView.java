@@ -1,13 +1,16 @@
 package io.pivotal.catalog.components;
 
+import io.muoncore.newton.EventHandler;
+import io.muoncore.newton.StreamSubscriptionManager;
+import io.muoncore.newton.query.SharedDatastoreView;
 import io.pivotal.catalog.entities.Product;
 import io.pivotal.catalog.events.ProductAddedEvent;
 import io.pivotal.catalog.repositories.ProductRepository;
-import org.axonframework.config.ProcessingGroup;
-import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 
 /*
@@ -30,18 +33,23 @@ import org.springframework.stereotype.Component;
 */
 
 @Component
-@ProcessingGroup("amqpEvents")
-public class EventProcessor {
+public class ProductListView extends SharedDatastoreView {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EventProcessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProductListView.class);
 
     private final ProductRepository repo;
 
-    public EventProcessor(ProductRepository repository) {
-        this.repo = repository;
+    public ProductListView(ProductRepository repo, StreamSubscriptionManager streamSubscriptionManager) {
+        super(streamSubscriptionManager);
+        this.repo = repo;
     }
 
-    @EventHandler // Mark this method as an Axon Event Handler
+    @Override
+    protected String[] eventStreams() {
+        return new String[] { "products/Product" };
+    }
+
+    @EventHandler
     public void on(ProductAddedEvent productAddedEvent) {
         repo.save(new Product(productAddedEvent.getId(), productAddedEvent.getName()));
         LOG.info("A product was added! Id={} Name={}", productAddedEvent.getId(), productAddedEvent.getName());

@@ -1,7 +1,7 @@
 plugins {
     id "com.gorylenko.gradle-git-properties" version "1.4.16"
     id "io.spring.dependency-management" version "1.0.3.RELEASE"
-    id 'org.springframework.boot' version "1.5.4.RELEASE"
+    id 'org.springframework.boot' version "1.5.2.RELEASE"
 }
 
 dependencyManagement {
@@ -16,6 +16,13 @@ jar {
     archiveName = 'pcf-axon-cqrs-demo-command-side.jar'
 }
 
+repositories {
+    mavenLocal()
+    jcenter()
+    maven { url 'https://simplicityitself.artifactoryonline.com/simplicityitself/muon' }
+    maven { url 'https://simplicityitself.artifactoryonline.com/simplicityitself/muon-snapshot' }
+}
+
 dependencies {
 
 	// Spring Web
@@ -26,21 +33,21 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
 	// compile('com.h2database:h2')
 
-    // Messaging
-    compile("org.springframework.boot:spring-boot-starter-amqp:${springBootVersion}")
-
     // Spring Cloud
-    compile("io.pivotal.spring.cloud:spring-cloud-services-starter-config-client")
-    compile("io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry")
+//    compile("io.pivotal.spring.cloud:spring-cloud-services-starter-config-client")
+//    compile("io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry")
     // compile('org.springframework.cloud:spring-cloud-starter-sleuth')
     // compile('org.springframework.cloud:spring-cloud-stream-binder-rabbit')
     // compile('org.springframework.cloud:spring-cloud-sleuth-zipkin-stream')
 
-    // Axon CQRS / ES Framework
-    compile("org.axonframework:axon-spring-boot-starter:${axonVersion}")
-    compile("org.axonframework:axon-amqp:${axonVersion}")
+    // Muon CQRS / ES Framework
+    runtime "io.muoncore.transport:muon-amqp:0.0.9-SNAPSHOT"
+    compile 'io.muoncore.newton:newton-core:0.0.12-SNAPSHOT'
+    compile 'io.muoncore.newton:newton-spring-starter:0.0.12-SNAPSHOT'
+    compile "com.h2database:h2"
 
-	// Test
+
+    // Test
 	testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
     testCompile("org.axonframework:axon-test:${axonVersion}")
 }

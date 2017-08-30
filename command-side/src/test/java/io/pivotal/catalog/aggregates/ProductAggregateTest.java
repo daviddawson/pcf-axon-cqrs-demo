@@ -17,7 +17,7 @@ public class ProductAggregateTest {
 
     @Before
     public void setUp() {
-        fixture = new AggregateTestFixture(ProductAggregate.class);
+        fixture = new AggregateTestFixture(Product.class);
         id = UUID.randomUUID().toString();
         name = "test-"+id;
     }

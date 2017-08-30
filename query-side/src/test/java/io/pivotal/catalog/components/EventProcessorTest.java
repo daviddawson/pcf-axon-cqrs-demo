@@ -24,7 +24,7 @@ public class EventProcessorTest {
     ProductRepository repo;
 
     ProductAddedEvent event;
-    EventProcessor processor;
+    ProductListView processor;
 
     String uuid;
     String name;
@@ -34,7 +34,7 @@ public class EventProcessorTest {
         uuid = UUID.randomUUID().toString();
         name = "test-"+uuid;
         event = new ProductAddedEvent(uuid, name);
-        processor = new EventProcessor(repo);
+        processor = new ProductListView(repo);
     }
 
     @Test

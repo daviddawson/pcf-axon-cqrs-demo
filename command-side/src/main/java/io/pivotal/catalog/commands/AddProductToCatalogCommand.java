@@ -1,28 +1,29 @@
 package io.pivotal.catalog.commands;
 
-public class AddProductToCatalogCommand {
+import io.muoncore.newton.command.Command;
+import io.muoncore.newton.eventsource.EventSourceRepository;
+import io.pivotal.catalog.aggregates.Product;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-    private final String id;
-    private final String name;
+@Component
+@Scope("prototype")
+@ToString
+public class AddProductToCatalogCommand implements Command {
 
-    public AddProductToCatalogCommand(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    @Setter
+    private String id;
+    @Setter
+    private String name;
 
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
+    @Autowired
+    private EventSourceRepository<Product> repository;
 
     @Override
-    public String toString() {
-        return "AddProductToCatalogCommand{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+    public void execute() {
+        repository.newInstance(() -> new Product(id, name));
     }
 }
